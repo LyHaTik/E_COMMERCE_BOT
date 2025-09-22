@@ -1,12 +1,12 @@
 from datetime import datetime
-
+import enum
 from sqlalchemy import (
-    Column, Integer, String, ForeignKey,
+    Column, Integer, String, ForeignKey, Boolean,
     Text, DateTime, Enum, UniqueConstraint, BigInteger
 )
 from sqlalchemy.orm import relationship
 
-from app.db.connect import Base
+from db.connect import Base
 
 
 class User(Base):
@@ -17,7 +17,8 @@ class User(Base):
     phone = Column(String, nullable=True)
     address = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-
+    is_admin = Column(Boolean, default=False)
+    
     carts = relationship("Cart", back_populates="user")
     orders = relationship("Order", back_populates="user")
 
@@ -26,7 +27,7 @@ class Category(Base):
     __tablename__ = "categories"
 
     id = Column(Integer, primary_key=True)
-    title = Column(String, nullable=False)
+    title = Column(String(64), nullable=False)
 
     products = relationship("Product", back_populates="category")
 
@@ -36,7 +37,7 @@ class Product(Base):
 
     id = Column(Integer, primary_key=True)
     category_id = Column(Integer, ForeignKey("categories.id"))
-    title = Column(String, nullable=False)
+    title = Column(String(64), nullable=False)
     description = Column(Text)
     price = Column(Integer, nullable=False)   # цена в минимальных единицах
     currency = Column(String, default="RUB")
@@ -75,6 +76,14 @@ class CartItem(Base):
     __table_args__ = (UniqueConstraint("cart_id", "product_id"),)
 
 
+class OrderStatus(str, enum.Enum):
+    NEW = "NEW"
+    CONFIRMED = "CONFIRMED"
+    SHIPPED = "SHIPPED"
+    CANCELLED = "CANCELLED"
+    COMPLETED = "COMPLETED"
+
+
 class Order(Base):
     __tablename__ = "orders"
 
@@ -83,12 +92,14 @@ class Order(Base):
     order_number = Column(String, unique=True, nullable=False)
     total = Column(Integer, nullable=False)
     delivery_method = Column(
-        Enum("Почта", "Курьер")
+        Enum("Почта", "Курьер", name="order_delivery_method")
     )
     status = Column(
-        Enum("NEW", "CONFIRMED", "SHIPPED", "CANCELLED", "COMPLETED", name="order_status"),
-        default="NEW"
+        Enum(OrderStatus, name="order_status"),
+        default=OrderStatus.NEW,
+        nullable=False
     )
+
     contact_name = Column(String, nullable=False)
     contact_phone = Column(String, nullable=False)
     address = Column(Text, nullable=True)

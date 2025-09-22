@@ -1,8 +1,9 @@
 import uuid
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
-from app.db.models import Order, OrderItem, CartItem, Cart
-from app.db.connect import AsyncSessionLocal
+from db.models import Order, OrderItem, CartItem, Cart
+from db.connect import AsyncSessionLocal
 
 
 def generate_order_number() -> str:
@@ -20,7 +21,10 @@ async def create_order(user_id: int, contact_name: str, contact_phone: str, addr
             return None
 
         # получим все позиции
-        result = await session.execute(select(CartItem).where(CartItem.cart_id == cart.id))
+        result = await session.execute(
+            select(CartItem)
+            .options(selectinload(CartItem.product))
+            .where(CartItem.cart_id == cart.id))
         cart_items = result.scalars().all()
         if not cart_items:
             return None
@@ -59,6 +63,19 @@ async def create_order(user_id: int, contact_name: str, contact_phone: str, addr
         await session.commit()
         await session.refresh(order)
         return order
+
+
+async def get_list_order(status: str = None):
+    """Список заказов (для админки)"""
+    async with AsyncSessionLocal() as session:
+        stmt = select(Order)
+        if status:
+            stmt = stmt.where(Order.status == status)
+        else:
+            stmt = stmt.where(Order.status != "COMPLETED")
+
+        result = await session.execute(stmt)
+        return result.scalars().all()
 
 
 async def get_orders(status: str = None):

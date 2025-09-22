@@ -4,9 +4,9 @@ from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 import logging
 
-from app.auth import bot
-from app.handlers import routers
-from app.db import create_tables_if_not_exist
+from auth import bot
+from handlers import routers
+from db import create_tables_if_not_exist
 
 
 logging.basicConfig(level=logging.INFO)

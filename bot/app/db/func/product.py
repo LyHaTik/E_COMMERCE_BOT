@@ -1,10 +1,29 @@
 from sqlalchemy import select
 
-from app.db.models import Product
-from app.db.connect import AsyncSessionLocal
+from db.models import Product, Category
+from db.connect import AsyncSessionLocal
 
 
-async def add_product(category_id: int, title: str, description: str, price: int, stock: int, img_url: str = None):
+async def get_or_create_category(title: str) -> Category:
+    async with AsyncSessionLocal() as session:  
+        # Проверяем, есть ли категория с таким названием
+        result = await session.execute(
+            select(Category).where(Category.title == title)
+        )
+        category = result.scalar_one_or_none()
+
+        if category:
+            return category  # если есть — возвращаем
+
+        # если нет — создаем
+        category = Category(title=title)
+        session.add(category)
+        await session.commit()
+        await session.refresh(category)  # обновляем объект, чтобы был id
+        return category
+
+
+async def put_product(category_id: int, title: str, description: str, price: int, stock: int, img_url: str = None):
     """Добавление товара"""
     async with AsyncSessionLocal() as session:
         product = Product(

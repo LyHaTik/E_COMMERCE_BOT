@@ -1,15 +1,42 @@
-# catalog_kb.py
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
-def categories_keyboard(categories):
-    kb = InlineKeyboardMarkup(row_width=2)
-    for cat in categories:
-        kb.add(InlineKeyboardButton(text=cat.title, callback_data=f"cat:{cat.id}"))
-    return kb
+def categories_ikb(categories):
+    kb = InlineKeyboardBuilder()
+    for c in categories:
+        kb.button(
+            text=c.title,
+            callback_data=f"product_list:{c.id}"
+        )
+    kb.button(text=f'Назад', callback_data=f"back_start:")
+    kb.adjust(1)
+    return kb.as_markup()
 
-def product_keyboard(product_id):
-    kb = InlineKeyboardMarkup()
-    kb.add(InlineKeyboardButton("В корзину", callback_data=f"add:{product_id}"))
-    kb.add(InlineKeyboardButton("Назад к категориям", callback_data="back:categories"))
-    return kb
+
+def product_list_ikb(products):
+    kb = InlineKeyboardBuilder()
+    for p in products:
+        kb.button(
+                text=f"{p.title}",
+                callback_data=f"product_details:{p.id}"
+            )
+    kb.button(text=f'Назад', callback_data=f"back_categories:")
+    kb.adjust(1)
+    return kb.as_markup()
+
+
+def product_ikb(product):
+    kb = InlineKeyboardBuilder()
+    kb.button(text=f'В корзину', callback_data=f"to_cart:{product.id}")
+    kb.button(text=f'Назад', callback_data=f"back_product_list:{product.id}")
+    kb.adjust(1)
+    return kb.as_markup()
+
+
+def admin_product_ikb(product):
+    kb = InlineKeyboardBuilder()
+    kb.button(text=f'В корзину', callback_data=f"to_cart:{product.id}")
+    kb.button(text=f'Изменить', callback_data=f"edit_product:{product.id}")
+    kb.button(text=f'Назад', callback_data=f"back_product_list:{product.id}")
+    kb.adjust(2)
+    return kb.as_markup()

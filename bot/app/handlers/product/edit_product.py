@@ -9,26 +9,34 @@ delete_product() — удаление
 show_orders() — список заказов
 
 update_order_status() — изменение статуса"""
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from app.states.product import EditProduct
-
+from states.product import AddProduct
+from utils.delete_message import deleter
+from pages.product import add_product_category_page
 
 router = Router()
 
 
 @router.callback_query(F.data.startswith("edit_product:"))
-async def hand_edit_product(callback: CallbackQuery):
+async def hand_edit_product(callback: CallbackQuery, state: FSMContext):
+    user_id = int(callback.from_user.id)
     _, product_id = callback.data.split(":")
-    # state.data = product_id
-    # Сообщение с инлайн кнопками Title, category, price, currency, description, img, stock
+    
+    await deleter(user_id, state)
+    
+    await add_product_category_page(user_id, state)
+    
+    await state.update_data(product_id=product_id)
+    await state.set_state(AddProduct.waiting_for_category_name)
 
+"""
 #######################################################################################
 @router.callback_query(F.data.startswith("edit_product_title"))
 async def hand_edit_product_title(callback: CallbackQuery, state: FSMContext):
-    # Сообщение Напишите новое название продукта
+    # Сообщение Напишите новое название продукта максимальная длина 64, если длина больше уведомление
     # state  EditProduct.waiting_for_product_title
     pass
 
@@ -161,3 +169,4 @@ async def hand_edit_img(message: Message, state: FSMContext):
     # Сообщение с инлайн кнопками Title, category, price, currency, description, img, stock
     # очищаем state
     pass
+"""

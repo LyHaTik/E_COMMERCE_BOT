@@ -1,21 +1,40 @@
 from aiogram import Router, F
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
 
-from app.db.func.user import get_or_create_user
+from pages.start import start_page
+from auth import bot
+from utils.delete_message import deleter
+
 
 router = Router()
 
-
 @router.message(Command("start"))
-async def cmd_start(message: Message):
+async def cmd_start(message: Message, state: FSMContext):
     user_id = int(message.from_user.id)
-    user_name = message.from_user.full_name
-    user = await get_or_create_user(user_id, user_name)
-    # 
-    # Если админ добавить кнопки Списка заказов и Добавление товара
-    # Добавить названия продкутов в подсказки сформировав команды
-    await send_main_menu(message, user)
+    await bot.delete_message(chat_id=user_id, message_id=message.message_id)
+    
+    await start_page(user_id, state)
     
     
     # Роутер принимающий команды подсказки
+
+
+@router.message(F.text.in_(("Назад", "Рестарт")))
+async def message_back(message: Message, state: FSMContext):
+    user_id = int(message.from_user.id)
+    await bot.delete_message(chat_id=user_id, message_id=message.message_id)
+    
+    await deleter(user_id, state)
+
+    await start_page(user_id, state)
+
+
+@router.callback_query(F.data.startswith("back_start:"))
+async def back_start(callback: CallbackQuery, state: FSMContext):
+    user_id = int(callback.from_user.id)
+    
+    await deleter(user_id, state)
+    
+    await start_page(user_id, state)
