@@ -8,17 +8,14 @@ async def create_tables_if_not_exist() -> None:
         
         
     async with AsyncSessionLocal() as session:
-        # проверим, есть ли уже товары
         result = await session.execute("SELECT COUNT(*) FROM products;")
         count = result.scalar_one()
 
         if count == 0:
-            # создаем категорию
             category = Category(title="Электроника")
             session.add(category)
-            await session.flush()  # чтобы получить category.id
+            await session.flush()
 
-            # создаем товары
             products = [
                 Product(
                     category_id=category.id,

@@ -4,16 +4,20 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
 from pages.start import start_page
-from auth import bot
-from utils.delete_message import deleter
+from utils.delete_message import cleaner_command, cleaner_message
 
 
 router = Router()
 
 @router.message(Command("start"))
-async def cmd_start(message: Message, state: FSMContext):
+async def hand_cmd_start(message: Message, state: FSMContext):
+    """
+    Обработчик команды /start.
+    Очищает исходное сообщение и показывает стартовую страницу.
+    """
     user_id = int(message.from_user.id)
-    await bot.delete_message(chat_id=user_id, message_id=message.message_id)
+    
+    await cleaner_command(message)
     
     await start_page(user_id, state)
     
@@ -21,20 +25,28 @@ async def cmd_start(message: Message, state: FSMContext):
     # Роутер принимающий команды подсказки
 
 
-@router.message(F.text.in_(("Назад", "Рестарт")))
-async def message_back(message: Message, state: FSMContext):
+@router.message(F.text == "Назад")
+async def hand_message_back(message: Message, state: FSMContext):
+    """
+    Обработчик кнопки "Назад".
+    Очищает сообщение и состояние пользователя, затем возвращает на стартовую страницу.
+    """
     user_id = int(message.from_user.id)
-    await bot.delete_message(chat_id=user_id, message_id=message.message_id)
     
-    await deleter(user_id, state)
+    await cleaner_command(message)
+    await cleaner_message(user_id, state)
 
     await start_page(user_id, state)
 
 
 @router.callback_query(F.data.startswith("back_start:"))
-async def back_start(callback: CallbackQuery, state: FSMContext):
+async def hand_call_back_start(callback: CallbackQuery, state: FSMContext):
+    """
+    Обработчик callback-кнопки возврата на стартовую страницу.
+    Очищает сообщения пользователя и выводит стартовую страницу.
+    """
     user_id = int(callback.from_user.id)
     
-    await deleter(user_id, state)
+    await cleaner_message(user_id, state)
     
     await start_page(user_id, state)

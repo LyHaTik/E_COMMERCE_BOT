@@ -6,20 +6,18 @@ from db.connect import AsyncSessionLocal
 
 async def get_or_create_category(title: str) -> Category:
     async with AsyncSessionLocal() as session:  
-        # Проверяем, есть ли категория с таким названием
         result = await session.execute(
             select(Category).where(Category.title == title)
         )
         category = result.scalar_one_or_none()
 
         if category:
-            return category  # если есть — возвращаем
+            return category
 
-        # если нет — создаем
         category = Category(title=title)
         session.add(category)
         await session.commit()
-        await session.refresh(category)  # обновляем объект, чтобы был id
+        await session.refresh(category)
         return category
 
 

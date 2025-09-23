@@ -1,13 +1,8 @@
 from aiogram.fsm.context import FSMContext
 
 from auth import bot
-from keyboards.product_kb import save_product_ikb, add_product_category_kb
+from keyboards.product_kb import add_product_confirm_ikb, add_product_category_kb
 from db.func.catalog import get_categories
-
-
-
-async def edit_product_page(user_id: int, product_id: int, state: FSMContext):
-    pass
 
 
 async def add_product_category_page(user_id: int, state: FSMContext):
@@ -36,6 +31,7 @@ async def add_product_title_page(user_id: int, state: FSMContext):
 async def add_product_description_page(user_id: int, state: FSMContext):
     data = await state.get_data()
     add_product_message_id = data.get("add_product_message_id")
+    
     await bot.edit_message_text(
         chat_id=user_id,
         message_id=add_product_message_id,
@@ -46,6 +42,7 @@ async def add_product_description_page(user_id: int, state: FSMContext):
 async def add_product_price_page(user_id: int, state: FSMContext):
     data = await state.get_data()
     add_product_message_id = data.get("add_product_message_id")
+    
     await bot.edit_message_text(
         chat_id=user_id,
         message_id=add_product_message_id,
@@ -56,6 +53,7 @@ async def add_product_price_page(user_id: int, state: FSMContext):
 async def add_product_stock_page(user_id: int, state: FSMContext):
     data = await state.get_data()
     add_product_message_id = data.get("add_product_message_id")
+    
     await bot.edit_message_text(
         chat_id=user_id,
         message_id=add_product_message_id,
@@ -66,6 +64,7 @@ async def add_product_stock_page(user_id: int, state: FSMContext):
 async def add_product_img_page(user_id: int, state: FSMContext):
     data = await state.get_data()
     add_product_message_id = data.get("add_product_message_id")
+    
     await bot.edit_message_text(
         chat_id=user_id,
         message_id=add_product_message_id,
@@ -83,6 +82,7 @@ async def add_product_page(
     img_id: str,
     state: FSMContext
     ):
+    
     message_product = await bot.send_photo(
         chat_id=user_id,
         photo=img_id,
@@ -91,7 +91,33 @@ async def add_product_page(
                 Описание: {product_description}\n\
                 Цена: {product_price} RUB\n\
                 Кол-во: {product_stock}",
-        reply_markup=save_product_ikb()
+        reply_markup=add_product_confirm_ikb()
         )
     
     await state.update_data(message_product_id=message_product.message_id)
+
+
+async def add_product_error_64_page(user_id: int, state: FSMContext):
+    data = await state.get_data()
+    add_product_message_id = data.get("add_product_message_id")
+    
+    await bot.edit_message_text(
+        chat_id=user_id,
+        message_id=add_product_message_id,
+        text="❌ Ошибка названия\n\
+                (⚠️ длина не больше 64 символов)\n\
+                Повторите ввод:"
+                )
+
+
+async def add_product_error_validation_page(user_id: int, state: FSMContext):
+    data = await state.get_data()
+    add_product_message_id = data.get("add_product_message_id")
+    
+    await bot.edit_message_text(
+        chat_id=user_id,
+        message_id=add_product_message_id,
+        text="❌ Ошибка валидации\n\
+                (⚠️ введите число)\n\
+                Повторите ввод:"
+                )

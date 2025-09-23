@@ -1,7 +1,7 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
-def save_product_ikb():
+def add_product_confirm_ikb():
     kb = InlineKeyboardBuilder()
     kb.button(text=f'Сохранить', callback_data=f"confirm_product:")
     kb.button(text=f'Отмена', callback_data=f"back_start:")

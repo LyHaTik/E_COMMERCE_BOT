@@ -14,13 +14,12 @@ def generate_order_number() -> str:
 async def create_order(user_id: int, contact_name: str, contact_phone: str, address: str, delivery_method: str):
     """Оформление заказа из корзины"""
     async with AsyncSessionLocal() as session:
-        # найдём корзину
+
         result = await session.execute(select(Cart).where(Cart.user_id == user_id))
         cart = result.scalar_one_or_none()
         if not cart:
             return None
 
-        # получим все позиции
         result = await session.execute(
             select(CartItem)
             .options(selectinload(CartItem.product))
@@ -29,10 +28,8 @@ async def create_order(user_id: int, contact_name: str, contact_phone: str, addr
         if not cart_items:
             return None
 
-        # считаем итог
         total = sum(i.quantity * i.price_snapshot for i in cart_items)
 
-        # создаём заказ
         order = Order(
             user_id=user_id,
             order_number=generate_order_number(),
@@ -43,9 +40,8 @@ async def create_order(user_id: int, contact_name: str, contact_phone: str, addr
             address=address,
         )
         session.add(order)
-        await session.flush()  # чтобы получить order.id
+        await session.flush()
 
-        # переносим позиции
         for item in cart_items:
             order_item = OrderItem(
                 order_id=order.id,
@@ -56,7 +52,6 @@ async def create_order(user_id: int, contact_name: str, contact_phone: str, addr
             )
             session.add(order_item)
 
-        # очистим корзину
         for item in cart_items:
             await session.delete(item)
 
@@ -74,16 +69,6 @@ async def get_list_order(status: str = None):
         else:
             stmt = stmt.where(Order.status != "COMPLETED")
 
-        result = await session.execute(stmt)
-        return result.scalars().all()
-
-
-async def get_orders(status: str = None):
-    """Список заказов (для админки)"""
-    async with AsyncSessionLocal() as session:
-        stmt = select(Order)
-        if status:
-            stmt = stmt.where(Order.status == status)
         result = await session.execute(stmt)
         return result.scalars().all()
 

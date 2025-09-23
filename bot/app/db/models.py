@@ -39,7 +39,7 @@ class Product(Base):
     category_id = Column(Integer, ForeignKey("categories.id"))
     title = Column(String(64), nullable=False)
     description = Column(Text)
-    price = Column(Integer, nullable=False)   # цена в минимальных единицах
+    price = Column(Integer, nullable=False)
     currency = Column(String, default="RUB")
     img_url = Column(String, nullable=True)
     stock = Column(Integer, default=0)
