@@ -2,8 +2,8 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from db.models import Order, OrderItem, CartItem, Cart
-from db.connect import AsyncSessionLocal
+from shared.db.models import Order, OrderItem, CartItem, Cart
+from shared.db.connect import AsyncSessionLocal
 
 
 def generate_order_number() -> str:

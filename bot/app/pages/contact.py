@@ -1,7 +1,7 @@
 from aiogram.fsm.context import FSMContext
 
 from auth import bot
-from db.func.user import get_or_create_user
+from shared.db.func.user import get_or_create_user
 from keyboards.contact_kb import contact_confirm_ikb
 from keyboards.order_kb import order_delivery_method_ikb
 

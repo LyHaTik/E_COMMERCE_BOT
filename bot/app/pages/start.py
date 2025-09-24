@@ -1,7 +1,7 @@
 from aiogram.fsm.context import FSMContext
 
 from auth import bot
-from db.func.user import get_or_create_user
+from shared.db.func.user import get_or_create_user
 from keyboards.start_kb import main_kb
 from utils.delete_message import cleaner_message
 

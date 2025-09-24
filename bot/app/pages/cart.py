@@ -2,8 +2,8 @@ from aiogram.fsm.context import FSMContext
 
 from auth import bot
 from keyboards.cart_kb import cart_item_ikb, cart_confirm_ikb, cart_back_ikb
-from db.func.cart import get_cart_items, get_cart_total
-from db.models import CartItem
+from shared.db.func.cart import get_cart_items, get_cart_total
+from shared.db.models import CartItem
 
 
 async def cart_page(user_id: int, state: FSMContext):

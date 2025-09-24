@@ -3,8 +3,8 @@ import os
 from sqlalchemy import select
 from dotenv import load_dotenv
 
-from db.connect import AsyncSessionLocal
-from db.models import User
+from shared.db.connect import AsyncSessionLocal
+from shared.db.models import User
 
 
 load_dotenv()

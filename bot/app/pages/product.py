@@ -2,7 +2,7 @@ from aiogram.fsm.context import FSMContext
 
 from auth import bot
 from keyboards.product_kb import add_product_confirm_ikb, add_product_category_kb
-from db.func.catalog import get_categories
+from shared.db.func.catalog import get_categories
 
 
 async def add_product_category_page(user_id: int, state: FSMContext):

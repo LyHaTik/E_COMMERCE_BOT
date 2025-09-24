@@ -1,6 +1,6 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from db.models import Product, Category
+from shared.db.models import Product, Category
 
 
 def categories_ikb(categories: list[Category]):

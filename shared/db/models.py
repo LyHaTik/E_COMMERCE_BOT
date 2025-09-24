@@ -6,7 +6,20 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from db.connect import Base
+from shared.db.connect import Base
+
+
+class OrderStatus(str, enum.Enum):
+    NEW = "NEW"
+    CONFIRMED = "CONFIRMED"
+    SHIPPED = "SHIPPED"
+    CANCELLED = "CANCELLED"
+    COMPLETED = "COMPLETED"
+
+
+class DeliveryMethod(str, enum.Enum):
+    MAIL = "MAIL"
+    COURIER = "COURIER"
 
 
 class User(Base):
@@ -76,14 +89,6 @@ class CartItem(Base):
     __table_args__ = (UniqueConstraint("cart_id", "product_id"),)
 
 
-class OrderStatus(str, enum.Enum):
-    NEW = "NEW"
-    CONFIRMED = "CONFIRMED"
-    SHIPPED = "SHIPPED"
-    CANCELLED = "CANCELLED"
-    COMPLETED = "COMPLETED"
-
-
 class Order(Base):
     __tablename__ = "orders"
 
@@ -92,7 +97,8 @@ class Order(Base):
     order_number = Column(String, unique=True, nullable=False)
     total = Column(Integer, nullable=False)
     delivery_method = Column(
-        Enum("Почта", "Курьер", name="order_delivery_method")
+        Enum(DeliveryMethod, name="order_delivery_method"),
+        nullable=False
     )
     status = Column(
         Enum(OrderStatus, name="order_status"),

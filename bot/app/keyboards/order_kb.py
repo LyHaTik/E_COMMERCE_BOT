@@ -1,6 +1,6 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from db.models import OrderStatus, Order
+from shared.db.models import OrderStatus, Order, DeliveryMethod
 
 
 def order_confirm_ikb():
@@ -22,7 +22,7 @@ def order_status_ikb(order: Order):
 
 def order_delivery_method_ikb():
     kb = InlineKeyboardBuilder()
-    kb.button(text=f'Почта', callback_data=f"Почта")
-    kb.button(text=f'Курьер', callback_data=f"Курьер")
+    for delivery_method in DeliveryMethod:
+        kb.button(text=delivery_method.value, callback_data=delivery_method.value)
     kb.adjust(2)
     return kb.as_markup()

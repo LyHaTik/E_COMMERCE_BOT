@@ -18,7 +18,22 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./bot:/app
+      - ./bot/app:/app
+      - ./shared:/app/shared
+    restart: unless-stopped
+  api:
+    build:
+      context: ./api
+    container_name: e_commerce_api
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    volumes:
+      - ./api/app:/app
+      - ./shared:/app/shared
+    ports:
+      - "8000:8000"
     restart: unless-stopped
 
 volumes:

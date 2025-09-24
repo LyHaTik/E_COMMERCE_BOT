@@ -1,8 +1,8 @@
 from sqlalchemy import select, func, delete
 from sqlalchemy.orm import selectinload
 
-from db.models import Cart, CartItem, Product
-from db.connect import AsyncSessionLocal
+from shared.db.models import Cart, CartItem, Product
+from shared.db.connect import AsyncSessionLocal
 
 
 async def get_cart_item(cart_item_id: int):

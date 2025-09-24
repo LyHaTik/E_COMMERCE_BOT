@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
-from db.models import Product, Category
-from db.connect import AsyncSessionLocal
+from shared.db.models import Product, Category
+from shared.db.connect import AsyncSessionLocal
 
 
 async def get_or_create_category(title: str) -> Category:

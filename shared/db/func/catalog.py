@@ -1,8 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from db.models import Category, Product
-from db.connect import AsyncSessionLocal
+from shared.db.models import Category, Product
+from shared.db.connect import AsyncSessionLocal
 
 
 async def get_categories():
@@ -14,7 +14,6 @@ async def get_categories():
 
 async def get_products_by_category(category_id: int):
     """Все товары выбранной категории"""
-    print(category_id)
     async with AsyncSessionLocal() as session:
         result = await session.execute(
             select(Product)

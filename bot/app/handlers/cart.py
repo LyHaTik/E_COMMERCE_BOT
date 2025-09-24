@@ -3,7 +3,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 import logging
 
-from db.func.cart import get_cart_item, update_cart_item, remove_cart_item
+from shared.db.func.cart import get_cart_item, update_cart_item, remove_cart_item
 from pages.cart import cart_page, edit_cart_page
 from notifications.cart import notifity_error_count
 from utils.delete_message import cleaner_message, cleaner_command

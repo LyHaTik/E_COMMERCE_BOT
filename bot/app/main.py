@@ -6,7 +6,7 @@ import logging
 
 from auth import bot
 from handlers import routers
-from db import create_tables_if_not_exist
+from shared.db import create_tables_if_not_exist
 
 
 logging.basicConfig(level=logging.INFO)

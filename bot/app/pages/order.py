@@ -3,10 +3,10 @@ from aiogram.fsm.context import FSMContext
 from auth import bot
 from keyboards.order_kb import order_confirm_ikb, order_status_ikb
 from keyboards.start_kb import back_kb, main_kb
-from db.func.cart import get_cart_items, get_cart_total
-from db.func.order import get_list_order
-from db.func.user import get_or_create_user
-from db.models import Order
+from shared.db.func.cart import get_cart_items, get_cart_total
+from shared.db.func.order import get_list_order
+from shared.db.func.user import get_or_create_user
+from shared.db.models import Order
 
 
 

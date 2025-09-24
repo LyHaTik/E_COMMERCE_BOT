@@ -2,8 +2,8 @@ from aiogram.fsm.context import FSMContext
 
 from auth import bot
 from keyboards.catalog_kb import categories_ikb, product_list_ikb, product_details_ikb
-from db.func.catalog import get_products_by_category, get_categories, get_product
-from db.func.user import get_or_create_user
+from shared.db.func.catalog import get_products_by_category, get_categories, get_product
+from shared.db.func.user import get_or_create_user
 
 
 async def categories_page(user_id: int, state: FSMContext):

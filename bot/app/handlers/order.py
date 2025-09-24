@@ -3,8 +3,8 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 import logging
 
-from db.func.user import get_or_create_user, put_user_contact
-from db.func.order import update_order_status, create_order
+from shared.db.func.user import get_or_create_user, put_user_contact
+from shared.db.func.order import update_order_status, create_order
 from pages.order import list_order_page, edit_list_order_page, send_client_edit_status, order_page, create_order_page
 from pages.contact import contact_page, delivery_method_page, send_name, send_phone, send_address
 from states.contact import ContactStates

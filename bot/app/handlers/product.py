@@ -3,7 +3,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 import logging
 
-from db.func.product import put_product, get_or_create_category, edit_product
+from shared.db.func.product import put_product, get_or_create_category, edit_product
 from pages.start import start_page
 from pages.product import (
     add_product_title_page,
